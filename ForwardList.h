@@ -1,6 +1,6 @@
 /**
  * @file ForwardList.h
- * @author jdb360
+ * @author Jackson Brenneman
  * @brief Singly linked list template class
  * @date 2023-11-5
  * 
