@@ -1,6 +1,6 @@
 /**
  * @file Vector.h
- * @author jdb360
+ * @author Jackson Brenneman
  * @brief Resizable array class template
  * @date 2023-11-5
  * 
