@@ -1,6 +1,6 @@
 /**
  * @file HashMap.h
- * @author jdb360
+ * @author Jackson Brenneman
  * @brief Hash table implementation
  * @date 2023-11-05
  * 
