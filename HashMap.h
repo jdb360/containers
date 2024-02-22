@@ -3,7 +3,7 @@
  * @author Jackson Brenneman
  * @brief Hash table implementation
  * @date 2023-11-05
- * 
+ *
  */
 
 
@@ -21,18 +21,18 @@
 
 /**
  * @brief Pair structure to group two objects (often key and value)
- * 
+ *
  * @tparam T1 first object type
  * @tparam T2 second object type
  */
-template <typename T1, typename T2> 
-struct Pair 
+template <typename T1, typename T2>
+struct Pair
 {
     T1 first;
     T2 second;
 
     Pair(const T1& f = T1(), const T2& s = T2()) : first(f), second(s) {}
-    template <typename U1, typename U2> Pair(U1&& f, U2&& s) 
+    template <typename U1, typename U2> Pair(U1&& f, U2&& s)
         : first(std::forward<U1>(f)), second(std::forward<U2>(s)) {}
     Pair(const Pair& other) = default;
     Pair(Pair&& p) = default;
@@ -40,9 +40,9 @@ struct Pair
     Pair& operator=(const Pair&) = default;
     Pair& operator=(Pair&&) = default;
 
-    bool operator==(const Pair& rhs) const noexcept 
+    bool operator==(const Pair& rhs) const noexcept
         { return first == rhs.first; }
-    bool operator!=(const Pair& rhs) const noexcept 
+    bool operator!=(const Pair& rhs) const noexcept
         { return !(first == rhs.first); }
 
     template <typename F, typename G>
@@ -50,7 +50,7 @@ struct Pair
 };
 
 template<typename F, typename G>
-ostream& operator<<(ostream & os, const Pair<F,G> &p){    
+ostream& operator<<(ostream & os, const Pair<F,G> &p) {
     os << "(" << p.first << ", " << p.second << ") ";
 
     return os;
@@ -60,17 +60,17 @@ ostream& operator<<(ostream & os, const Pair<F,G> &p){
 /* * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *      Unordered Map Class Declaration
- * 
+ *
  * Uses hashing to store key, value pairs similar
- * std::unordered_map. Templated using key type, 
+ * std::unordered_map. Templated using key type,
  * value type, and a hash object. Stores pairs in
- * a vector of linked lists (chaining collision 
+ * a vector of linked lists (chaining collision
  * resolution).
- * 
+ *
  * * * * * * * * * * * * * * * * * * * * * * * * */
 
 template <typename Key, typename T, typename Hash = std::hash<Key>>
-class UnorderedMap 
+class UnorderedMap
 {
     typedef Pair<const Key, T> pair;
     class map_iterator;
@@ -87,13 +87,13 @@ public:
 
     typedef map_iterator iterator;
     typedef const_map_iterator const_iterator;
-    
+
 
     UnorderedMap() : UnorderedMap(1) {}
     UnorderedMap(size_t n, const Hash& hs = Hash())
-        : A(Vector<ForwardList<pair>>(nextPrime(n))), 
-          h(hs), 
-          currentSize(0), 
+        : A(Vector<ForwardList<pair>>(nextPrime(n))),
+          h(hs),
+          currentSize(0),
           _max_load_factor(1.0) {}
     UnorderedMap(const UnorderedMap&) = default;
     UnorderedMap(UnorderedMap&&) = default;
@@ -103,10 +103,10 @@ public:
     UnorderedMap& operator=(UnorderedMap&&);
 
           iterator begin() noexcept { return make_iterator(0, A[0].begin()); }
-    const_iterator cbegin() const noexcept 
+    const_iterator cbegin() const noexcept
         { return make_const_iterator(0, A[0].cbegin()); }
           iterator end() noexcept { return make_iterator(bucket_count()); }
-    const_iterator cend() const noexcept 
+    const_iterator cend() const noexcept
         { return make_const_iterator(bucket_count()); }
 
     bool empty() const noexcept { return currentSize == 0; }
@@ -144,35 +144,35 @@ private:
     size_t nextPrime(size_t);
 
     iterator make_iterator(
-        size_t ndx, 
+        size_t ndx,
         local_iterator itr = local_iterator(NULL)
-    ) { 
-        return iterator(A.begin() + ndx, itr, *this); 
+    ) {
+        return iterator(A.begin() + ndx, itr, *this);
     }
 
     const_iterator make_const_iterator(
-        size_t ndx, 
+        size_t ndx,
         const_local_iterator itr = const_local_iterator(NULL)
-    ) const { 
-        return const_iterator(A.cbegin() + ndx, itr, *this); 
+    ) const {
+        return const_iterator(A.cbegin() + ndx, itr, *this);
     }
 
-    class map_iterator 
+    class map_iterator
     {
         typedef typename Vector<ForwardList<pair>>::iterator bucket_iterator;
 
     public:
         map_iterator() : bucket(nullptr), pos(nullptr) {}
-        map_iterator(const map_iterator &it) 
+        map_iterator(const map_iterator &it)
             : bucket(it.bucket), pos(it.pos), ref(it.ref) {}
 
         pair& operator*() { return *pos; }
         pair* operator->() { return &(*pos); }
         map_iterator& operator++();
         map_iterator operator++(int);
-        bool operator==(const map_iterator& rhs) const noexcept 
+        bool operator==(const map_iterator& rhs) const noexcept
             { return pos == rhs.pos && bucket == rhs.bucket; }
-        bool operator!=(const map_iterator& rhs) const noexcept 
+        bool operator!=(const map_iterator& rhs) const noexcept
             { return !(*this == rhs); }
 
     private:
@@ -180,28 +180,28 @@ private:
         local_iterator pos;
         UnorderedMap &ref;
 
-        map_iterator(const bucket_iterator &b, const local_iterator &p, UnorderedMap &map) 
+        map_iterator(const bucket_iterator &b, const local_iterator &p, UnorderedMap &map)
             : bucket(b), pos(p), ref(map) {}
 
         friend iterator UnorderedMap::make_iterator(size_t, local_iterator);
     }; // class map_iterator
 
-    class const_map_iterator 
+    class const_map_iterator
     {
         typedef typename Vector<ForwardList<pair>>::const_iterator const_bucket_iterator;
 
     public:
         const_map_iterator() : bucket(nullptr), pos(nullptr) {}
-        const_map_iterator(const map_iterator &it) 
+        const_map_iterator(const map_iterator &it)
             : bucket(it.bucket), pos(it.pos), ref(it.ret) {}
 
         const pair& operator*() { return *pos; }
         const pair* operator->() { return &(*pos); }
         const_map_iterator& operator++();
         const_map_iterator operator++(int);
-        bool operator==(const const_map_iterator& rhs) const noexcept 
+        bool operator==(const const_map_iterator& rhs) const noexcept
             { return pos == rhs.pos && bucket == rhs.bucket; }
-        bool operator!=(const const_map_iterator& rhs) const noexcept 
+        bool operator!=(const const_map_iterator& rhs) const noexcept
             { return !(*this == rhs); }
 
     private:
@@ -209,12 +209,12 @@ private:
         const_local_iterator pos;
         const UnorderedMap &ref;
 
-        const_map_iterator(const_bucket_iterator b, const_local_iterator p, const UnorderedMap &map) 
+        const_map_iterator(const_bucket_iterator b, const_local_iterator p, const UnorderedMap &map)
             : bucket(b), pos(p), ref(map) {}
 
         friend const_iterator UnorderedMap::make_const_iterator(size_t, const_local_iterator) const;
     }; // class const_map_iterator
-    
+
 public:
     template <typename F, typename G, typename I>
     friend ostream& operator<<(ostream&, const UnorderedMap<F,G,I>&);
@@ -241,7 +241,7 @@ UnorderedMap<Key,T,Hash>&
 UnorderedMap<Key,T,Hash>::operator=(const UnorderedMap& other) {
     if(!empty())
         clear();
-    
+
     h = other.h;
     A = other.A;
     currentSize = other.currentSize;
@@ -256,7 +256,7 @@ UnorderedMap<Key,T,Hash>&
 UnorderedMap<Key,T,Hash>::operator=(UnorderedMap&& other) {
     if(!empty())
         clear();
-    
+
     h = std::move(other.h);
     A = std::move(other.A);
     currentSize = other.currentSize;
@@ -353,7 +353,7 @@ auto UnorderedMap<Key,T,H>::find(const Key& k) -> iterator {
             break;
         ++itr;
     } while(itr != end(index));
-        
+
     return make_iterator(index, itr);
 }
 
@@ -367,7 +367,7 @@ auto UnorderedMap<Key,T,H>::find(const Key& k) const -> const_iterator {
             return make_const_iterator(index, itr);
         ++itr;
     }
-        
+
     return cend();
 }
 
@@ -407,7 +407,7 @@ size_t UnorderedMap<Key,T,H>::nextPrime(size_t num) {
 
 
 template <typename Key, typename T, typename H>
-inline auto 
+inline auto
 UnorderedMap<Key,T,H>::map_iterator::operator++() -> map_iterator& {
     ++pos;
 
@@ -431,7 +431,7 @@ UnorderedMap<Key,T,H>::map_iterator::operator++(int) -> map_iterator {
 
 template <typename Key, typename T, typename H>
 inline auto
-UnorderedMap<Key,T,H>::const_map_iterator::operator++() 
+UnorderedMap<Key,T,H>::const_map_iterator::operator++()
 -> const_map_iterator& {
     ++pos;
 
@@ -446,8 +446,8 @@ UnorderedMap<Key,T,H>::const_map_iterator::operator++()
 }
 
 template <typename Key, typename T, typename H>
-inline auto 
-UnorderedMap<Key,T,H>::const_map_iterator::operator++(int) 
+inline auto
+UnorderedMap<Key,T,H>::const_map_iterator::operator++(int)
 -> const_map_iterator {
     auto temp = *this;
     ++(*this);
