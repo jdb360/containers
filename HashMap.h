@@ -17,7 +17,6 @@
 
 #include "ForwardList.h"
 #include "Vector.h"
-#include "Hash.h"
 
 
 /**
